@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"math/big"
+	"net/http"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -28,6 +29,20 @@ func main() {
 
 	store := NewMongoDBStore(client)
 	executeSomeDbCommands(store)
+
+	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
+		users, err := store.GetAll()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		for _, user := range users {
+			fmt.Fprintln(w, user.Username)
+		}
+	})
+
+	http.ListenAndServe(":5000", nil)
 }
 
 func executeSomeDbCommands(store Datastore) {
