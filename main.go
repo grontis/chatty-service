@@ -27,7 +27,10 @@ func main() {
 	pingMongoDbClient(client)
 
 	store := NewMongoDBStore(client)
+	executeSomeDbCommands(store)
+}
 
+func executeSomeDbCommands(store Datastore) {
 	users, err := store.GetAll()
 	if err != nil {
 		panic(err)
@@ -51,13 +54,12 @@ func main() {
 		fmt.Println(user.Username)
 	}
 
-	myUser, err := store.GetByID("grontis")
+	myUser, err := store.GetByID(newUser.Username)
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println(myUser.Username)
-
 }
 
 func getMongoDbClient(uri string) (*mongo.Client, error) {
