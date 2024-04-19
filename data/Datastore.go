@@ -1,4 +1,4 @@
-package main
+package data
 
 type Datastore interface {
 	GetAll() ([]*User, error)
